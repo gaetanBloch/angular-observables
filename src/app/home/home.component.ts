@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Observable, Observer, Subscription } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -22,7 +23,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Custom Observable that triggers every seconds
     const customIntervalObservable = new Observable(
       (observer: Observer<number>) => {
-        let count = 1;
+        let count = 0;
         setInterval(() => {
           observer.next(count);
           if (count === 5) {
@@ -37,14 +38,19 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     );
 
-    this.firstObsSubscription = customIntervalObservable.subscribe(
-      (count: number) => console.log(count),
-      (error: Error) => {
-        console.log(error);
-        alert(error.message);
-      },
-      () => console.log('Completed!')
-    );
+    this.firstObsSubscription = customIntervalObservable
+      .pipe(
+        filter((count: number) => count > 0),
+        map((count: number) => 'Round : ' + (count + 1))
+      )
+      .subscribe(
+        (count: string) => console.log(count),
+        (error: Error) => {
+          console.log(error);
+          alert(error.message);
+        },
+        () => console.log('Completed!')
+      );
   }
 
   ngOnDestroy(): void {
