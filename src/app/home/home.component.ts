@@ -23,11 +23,22 @@ export class HomeComponent implements OnInit, OnDestroy {
     const customIntervalObservable = new Observable(
       (observer: Observer<number>) => {
         let count = 1;
-        setInterval(() => observer.next(count++), 1000);
+        setInterval(() => {
+          observer.next(count);
+          if (count > 3) {
+            observer.error(new Error('Count is greater than 3!'));
+          }
+          count++;
+        }, 1000);
       }
     );
+
     this.firstObsSubscription = customIntervalObservable.subscribe(
-      (count: number) => console.log(count)
+      (count: number) => console.log(count),
+      (error: Error) => {
+        console.log(error);
+        alert(error.message);
+      }
     );
   }
 
