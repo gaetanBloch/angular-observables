@@ -25,7 +25,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         let count = 1;
         setInterval(() => {
           observer.next(count);
-          if (count === 2) {
+          if (count === 5) {
+            // Never called because 5 is never reached because of the error
             observer.complete();
           }
           if (count > 3) {
